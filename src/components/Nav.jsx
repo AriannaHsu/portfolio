@@ -1,18 +1,57 @@
 import { NavLink } from 'react-router-dom'
 
+const navLinks = [
+  { to: '/', label: 'Work', end: true },
+  { to: '/about', label: 'About' },
+  { to: '/gallery', label: 'Gallery' },
+]
+
 export default function Nav() {
   return (
-    <nav className="flex items-center justify-between px-8 py-6">
-      <NavLink to="/" className="font-medium text-sm tracking-wide">
-        Your Name
+    <nav style={{
+      position: 'sticky',
+      top: 0,
+      background: 'rgba(244, 241, 236, 0.86)',
+      backdropFilter: 'blur(6px)',
+      WebkitBackdropFilter: 'blur(6px)',
+      borderBottom: '1px solid var(--border)',
+      padding: '22px 48px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      zIndex: 100,
+    }}>
+      <NavLink
+        to="/"
+        style={{
+          fontFamily: 'var(--font-system)',
+          fontSize: '14px',
+          letterSpacing: '0.04em',
+          fontWeight: 500,
+          color: 'var(--text-primary)',
+        }}
+      >
+        AH.
       </NavLink>
-      <div className="flex gap-6 text-sm">
-        <NavLink to="/" end className={({ isActive }) => isActive ? 'underline underline-offset-4' : ''}>
-          Work
-        </NavLink>
-        <NavLink to="/about" className={({ isActive }) => isActive ? 'underline underline-offset-4' : ''}>
-          About
-        </NavLink>
+
+      <div style={{ display: 'flex', gap: '28px' }}>
+        {navLinks.map(({ to, label, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            className="nav-link"
+            style={({ isActive }) => ({
+              fontFamily: 'var(--font-system)',
+              fontSize: '12px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+              color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+            })}
+          >
+            {label}
+          </NavLink>
+        ))}
       </div>
     </nav>
   )
