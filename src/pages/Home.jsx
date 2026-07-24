@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useRef, useState, useMemo, useCallback } from 'react'
+import { useRef, useState, useMemo, useCallback, useEffect } from 'react'
 import { projects } from '../data/projects'
 
 function Thumbnail({ label }) {
@@ -19,6 +19,7 @@ function Thumbnail({ label }) {
       justifyContent: 'center',
       marginBottom: '16px',
       flexShrink: 0,
+      borderRadius: '8px',
     }}>
       <span style={{
         fontFamily: 'var(--font-system)',
@@ -105,55 +106,52 @@ function HeartDots() {
 
 export default function Home() {
   const pillRef = useRef(null)
-  const wasHoveringRef = useRef(false)
-  const leavingTimerRef = useRef(null)
+  const [hoveringCard, setHoveringCard] = useState(false)
 
-  // Cursor pill handlers
-  const handleCardEnter = useCallback(() => {
-    clearTimeout(leavingTimerRef.current)
-    const pill = pillRef.current
-    if (!pill) return
-    if (wasHoveringRef.current) {
-      pill.style.transform = 'translate(-50%, -50%) scale(0)'
-      setTimeout(() => {
-        if (pillRef.current) pillRef.current.style.transform = 'translate(-50%, -50%) scale(1)'
-      }, 160)
-    } else {
-      pill.style.transform = 'translate(-50%, -50%) scale(1)'
+  // Custom cursor: hide the native cursor and track mouse position while on this page.
+  useEffect(() => {
+    const prevCursor = document.body.style.cursor
+    document.body.style.cursor = 'none'
+
+    const handleMove = (e) => {
+      const pill = pillRef.current
+      if (!pill) return
+      pill.style.left = e.clientX + 'px'
+      pill.style.top = e.clientY + 'px'
     }
-    wasHoveringRef.current = true
+    window.addEventListener('mousemove', handleMove)
+
+    return () => {
+      document.body.style.cursor = prevCursor
+      window.removeEventListener('mousemove', handleMove)
+    }
   }, [])
 
-  const handleCardLeave = useCallback(() => {
-    const pill = pillRef.current
-    if (pill) pill.style.transform = 'translate(-50%, -50%) scale(0)'
-    leavingTimerRef.current = setTimeout(() => {
-      wasHoveringRef.current = false
-    }, 200)
-  }, [])
-
-  const handleCardMouseMove = useCallback((e) => {
-    const pill = pillRef.current
-    if (!pill) return
-    pill.style.left = e.clientX + 'px'
-    pill.style.top = e.clientY + 'px'
-  }, [])
+  const handleCardEnter = useCallback(() => setHoveringCard(true), [])
+  const handleCardLeave = useCallback(() => setHoveringCard(false), [])
 
   return (
     <>
-      {/* Cursor pill */}
+      {/* Custom cursor: purple circle that expands into a "View case study" pill over cards */}
       <div
         ref={pillRef}
         style={{
           position: 'fixed',
+          left: 0,
+          top: 0,
           pointerEvents: 'none',
           zIndex: 1000,
-          transform: 'translate(-50%, -50%) scale(0)',
-          transition: 'transform 0.16s ease',
-          background: 'var(--text-primary)',
+          transform: 'translate(-50%, -50%)',
+          transition: 'width 0.2s cubic-bezier(.22,1,.36,1), height 0.2s cubic-bezier(.22,1,.36,1), padding 0.2s cubic-bezier(.22,1,.36,1), border-radius 0.2s ease',
+          background: 'var(--accent-text)',
           color: 'var(--bg-surface)',
-          borderRadius: '999px',
-          padding: '10px 20px',
+          borderRadius: hoveringCard ? '999px' : '50%',
+          width: hoveringCard ? 'auto' : '14px',
+          height: hoveringCard ? 'auto' : '14px',
+          padding: hoveringCard ? '10px 20px' : 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           fontFamily: 'var(--font-system)',
           fontSize: '12px',
           letterSpacing: '0.04em',
@@ -161,7 +159,7 @@ export default function Home() {
           userSelect: 'none',
         }}
       >
-        View case study →
+        {hoveringCard ? 'View case study →' : null}
       </div>
 
       {/* Hero */}
@@ -179,7 +177,7 @@ export default function Home() {
               maxWidth: '720px',
               margin: 0,
             }}>
-              I turn complexity into tools people can act on.
+              COMPLEXITY TO CLARITY. 
             </h1>
 
             <p style={{
@@ -188,7 +186,7 @@ export default function Home() {
               color: 'var(--text-primary)',
               margin: '20px 0 0',
             }}>
-              Right moment. Right info.
+              I create tools delivering the right info at the right moment. 
             </p>
 
             <p style={{
@@ -210,39 +208,26 @@ export default function Home() {
       <section style={{ paddingBottom: '80px' }}>
         {/* Section eyebrow */}
         <div style={{ borderTop: '1px solid var(--border)', padding: '16px 48px' }}>
-          <span style={{
-            fontFamily: 'var(--font-system)',
-            fontSize: '12px',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            color: 'var(--text-secondary)',
-          }}>
-            Selected work
-          </span>
         </div>
 
         {/* Cards */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1px', background: 'var(--border)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '32px 28px' }}>
           {projects.map((project) => (
             <Link
               key={project.slug}
               to={`/work/${project.slug}`}
               onMouseEnter={handleCardEnter}
               onMouseLeave={handleCardLeave}
-              onMouseMove={handleCardMouseMove}
               style={{
-                flex: '1 1 320px',
-                background: 'var(--bg-surface)',
                 padding: '28px',
                 display: 'block',
-                cursor: 'none',
               }}
             >
               {project.coverImage ? (
                 <img
                   src={project.coverImage}
                   alt={project.title}
-                  style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', marginBottom: '16px' }}
+                  style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', marginBottom: '16px', borderRadius: '8px' }}
                 />
               ) : (
                 <Thumbnail label={project.thumbnailLabel || project.title} />
@@ -271,6 +256,20 @@ export default function Home() {
                   {project.meta}
                 </span>
               </div>
+
+              <p style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '14px',
+                lineHeight: 1.5,
+                color: 'var(--text-secondary)',
+                margin: '8px 0 0',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}>
+                {project.tagline || ' '}
+              </p>
             </Link>
           ))}
         </div>

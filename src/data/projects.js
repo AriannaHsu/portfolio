@@ -38,7 +38,7 @@ export const projects = [
   {
     slug: 'hudson-valley',
     title: 'Hudson Valley',
-    tagline: '',
+    tagline: 'Stremalined inventory tracking of 200+ lbs of wool and increased accessibility of sustainable fibers in the Northeast.',
     meta: 'Desktop · 0–1',
     thumbnailLabel: 'hudson valley — desktop screens',
     tags: ['UX Design', 'Desktop'],

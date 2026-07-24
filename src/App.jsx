@@ -37,7 +37,7 @@ export default function App() {
     <>
       <GrainOverlay />
       <Nav />
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, width: '100%', maxWidth: '1126px', margin: '0 auto', boxSizing: 'border-box' }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

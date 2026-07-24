@@ -1,7 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
+import footerSunset from '../assets/footer-sunset.jpg'
 
 const mono = { fontFamily: 'var(--font-system)' }
+
+const BRUSH_WIDTH = 340
+const BRUSH_HEIGHT = 190
+const BRUSH_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 180'><path d='M15,110 C5,80 25,45 60,35 C90,26 100,50 130,40 C165,28 175,5 215,10 C250,15 265,40 290,55 C310,66 300,95 275,100 C250,105 245,130 210,135 C180,140 165,120 135,130 C100,142 70,150 45,135 C20,121 22,130 15,110 Z' fill='white'/></svg>`
+const BRUSH_MASK_URL = `url("data:image/svg+xml,${encodeURIComponent(BRUSH_SVG)}")`
 
 function StatCell({ label, value }) {
   return (
@@ -37,6 +43,8 @@ function computeInitialStats() {
 export default function Footer() {
   const [statsOpen, setStatsOpen] = useState(false)
   const [stats, setStats] = useState(computeInitialStats)
+  const footerRef = useRef(null)
+  const maskRef = useRef(null)
 
   useEffect(() => {
     const onResize = () => setStats(s => ({ ...s, viewport: `${window.innerWidth}×${window.innerHeight}` }))
@@ -44,8 +52,57 @@ export default function Footer() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
+  const handleFooterMouseMove = useCallback((e) => {
+    const footer = footerRef.current
+    const mask = maskRef.current
+    if (!footer || !mask) return
+    const rect = footer.getBoundingClientRect()
+    const x = e.clientX - rect.left - BRUSH_WIDTH / 2
+    const y = e.clientY - rect.top - BRUSH_HEIGHT / 2
+    const position = `${x}px ${y}px`
+    mask.style.maskPosition = position
+    mask.style.webkitMaskPosition = position
+  }, [])
+
+  const handleFooterEnter = useCallback(() => {
+    if (maskRef.current) maskRef.current.style.opacity = '1'
+  }, [])
+
+  const handleFooterLeave = useCallback(() => {
+    if (maskRef.current) maskRef.current.style.opacity = '0'
+  }, [])
+
   return (
-    <footer style={{ background: 'var(--bg-surface)', borderTop: '1px solid var(--border)', padding: '80px 48px 40px' }}>
+    <footer
+      ref={footerRef}
+      onMouseMove={handleFooterMouseMove}
+      onMouseEnter={handleFooterEnter}
+      onMouseLeave={handleFooterLeave}
+      style={{ position: 'relative', overflow: 'hidden', background: 'var(--bg-surface)', borderTop: '1px solid var(--border)' }}
+    >
+      <div
+        ref={maskRef}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `url(${footerSunset})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center bottom',
+          opacity: 0,
+          transition: 'opacity 0.4s ease',
+          pointerEvents: 'none',
+          maskImage: BRUSH_MASK_URL,
+          WebkitMaskImage: BRUSH_MASK_URL,
+          maskRepeat: 'no-repeat',
+          WebkitMaskRepeat: 'no-repeat',
+          maskSize: `${BRUSH_WIDTH}px ${BRUSH_HEIGHT}px`,
+          WebkitMaskSize: `${BRUSH_WIDTH}px ${BRUSH_HEIGHT}px`,
+          maskPosition: '-9999px -9999px',
+          WebkitMaskPosition: '-9999px -9999px',
+        }}
+      />
+
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '1126px', margin: '0 auto', boxSizing: 'border-box', padding: '80px 48px 40px' }}>
 
       {/* Three-column row */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '48px', marginBottom: '64px' }}>
@@ -148,6 +205,7 @@ export default function Footer() {
             <StatCell label="Site" value={`React + Vite · ${new Date().getFullYear()}`} />
           </div>
         )}
+      </div>
       </div>
     </footer>
   )
