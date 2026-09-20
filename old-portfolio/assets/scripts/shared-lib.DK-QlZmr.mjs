@@ -1,0 +1,2 @@
+import{t as e}from"./rolldown-runtime.DX_nRkeu.mjs";function t(e,t){return{description:`Check out how Arianna has crafted intuitive, accessible designs and tackled diverse challenges from simplifying event scheduling, to facilitating conversations about online safety, to improving access to electricity.`,favicon:`https://framerusercontent.com/assets/hNFeWiiHJI9CYMdgIa7htc9piZU.png`,robots:`max-image-preview:large`,title:`Arianna Hsu's Portfolio`}}var n=e((()=>{}));export{t as n,n as t};
+//# sourceMappingURL=shared-lib.DK-QlZmr.mjs.map
