@@ -28,30 +28,20 @@ No test suite exists yet.
 
 ## Design system
 
-The intended visual direction is documented in `docs/design.md` and `docs/portfolio-website-brief.md`. **The design tokens in `design.md` are not yet applied** — `src/index.css` still contains the Vite starter template's color/font variables, not the portfolio's. When building UI, use the values from `design.md`:
+**`docs/design.md` is the source of truth** ("Orchard" system, mirrored from the Figma file `KUm3lGWuGZPXJQaI71Y26N`). Read it before building UI. In short:
 
-| Token | Value |
-|---|---|
-| Page background | `#F4F1EC` (warm off-white) |
-| Card/surface | `#F9F6F0` |
-| Dividers | `#E3DFD5` hairlines — no borders/shadows |
-| Primary text | `#2C2A28` (warm charcoal) |
-| Secondary text | `#8A857D` |
-| Accent | `#C9B8E8` (soft lavender — underlines/small accents only, never a large block) |
-| Accent hover/text | `#5A4E85` |
+- **Zones:** sky (hero + nav, `#E0F7FF`→`#ADEAFF`) → earth (projects, `#E49851`) → basket (footer, `#F4F3EF`). Watercolor illustrations on a site-wide paper texture; no drop shadows.
+- **Type:** Chewy (headings) · Butterfly Kids (hero script only) · MADE Okine Sans (body; Outfit fallback until licensed) · Space Mono (tags).
+- **Accessibility:** WCAG 2.2 AA is required. Several palette colors only pass contrast at 24px+; check the Contrast column in `design.md` before using a color.
 
-**Typography:** Perfectly Nineties (headers, fallback Georgia) / Suisse (body) / Nimbus (nav, footer, hover). These fonts are not yet loaded — add them via `@font-face` or a font hosting service.
-
-**CTA style:** Text link with colored underline ("Download resume →"), not filled buttons.
-
-**Personality layer:** Minimal, editorial base — warmth comes from one or two well-placed interactive moments (hero section, footer), not from color or busyness.
+Status: the hero, nav and paper texture follow the new system. The project cards, footer and other pages still use the old lavender/off-white styling from the starter (`--bg-base`, `--accent`, etc. in `src/index.css`), and those should be migrated.
 
 ## Site structure (intended — partially scaffolded)
 
 - **Home/Work** — hero (tagline + interactive visual hook) + case study card grid
 - **About** — experience, skills, personal interests
 - **Case Studies** — individual pages per project via `/work/:slug`
-- **Play** — interactive/experimental mini-projects (not yet created)
+- **Basket** (`/gallery`, was "Play") — interactive/experimental mini-projects
 - Resume download and Email/LinkedIn links should be globally accessible (nav + footer), not a standalone page
 
 See `docs/portfolio-website-brief.md` for the full content and interaction brief.

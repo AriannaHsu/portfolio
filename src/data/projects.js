@@ -2,6 +2,7 @@ export const projects = [
   {
     slug: 'interact',
     title: 'InterACT',
+    heroLine: 'through helping parents talk with their kids about online safety',
     tagline: 'Helped parents teach their children about internet safety through open dialogue, in partnership with the Alaska Children\'s Trust.',
     meta: 'Mobile · 0–1',
     thumbnailLabel: 'interact — mobile screens',
@@ -14,6 +15,7 @@ export const projects = [
   {
     slug: 'google-calendar',
     title: 'Google Calendar',
+    heroLine: 'through making it easier for groups to find a time to meet',
     tagline: 'Simplified group event scheduling by letting guests share their availability and preferences for meeting times.',
     meta: 'Desktop · Case study',
     thumbnailLabel: 'google calendar — desktop',
@@ -26,6 +28,7 @@ export const projects = [
   {
     slug: 'electricity-connection',
     title: 'Electricity Connection Service',
+    heroLine: 'through making electricity connections faster and fairer to apply for',
     tagline: 'Increased efficiency and reduced corruption with a digital application and approval platform for electricity connections.',
     meta: 'Mobile · 0–1',
     thumbnailLabel: 'electricity connection service — mobile',
@@ -38,6 +41,7 @@ export const projects = [
   {
     slug: 'hudson-valley',
     title: 'Hudson Valley',
+    heroLine: 'through expanding access to sustainable fibers',
     tagline: 'Stremalined inventory tracking of 200+ lbs of wool and increased accessibility of sustainable fibers in the Northeast.',
     meta: 'Desktop · 0–1',
     thumbnailLabel: 'hudson valley — desktop screens',

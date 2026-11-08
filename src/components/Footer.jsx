@@ -1,157 +1,98 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import basketSrc from '../assets/basket.webp'
 
-const mono = { fontFamily: 'var(--font-system)' }
+const RESUME_URL = '/Arianna-Hsu-Resume.pdf'
+const HEADLINE = 'let’s plant seeds together for a better tomorrow'
 
-function StatCell({ label, value }) {
+const navLinks = [
+  { label: 'Work', to: '/' },
+  { label: 'About', to: '/about' },
+  { label: 'Basket', to: '/gallery' },
+]
+
+const connectLinks = [
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/arianna-hsu', external: true },
+  { label: 'Email', href: 'mailto:ach282@cornell.edu' },
+  { label: 'Resume', href: RESUME_URL, external: true, note: 'PDF' },
+]
+
+// Headline set on a gentle arch over the basket (Figma annotation: "curve this").
+// Drawn as SVG text on paths so it scales as one unit; screen readers get the plain heading.
+function CurvedHeadline() {
   return (
-    <div>
-      <p style={{ ...mono, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-text)', marginBottom: '6px' }}>
-        {label}
-      </p>
-      <p style={{ ...mono, fontSize: '13px', color: 'var(--text-primary)', lineHeight: 1.5 }}>
-        {value}
-      </p>
-    </div>
+    <h2 className="footer__headline">
+      <span className="sr-only">{HEADLINE}</span>
+      <svg viewBox="0 0 600 170" aria-hidden="true" focusable="false">
+        <path id="footer-arc-1" d="M 20 84 Q 300 24 580 84" fill="none" />
+        <path id="footer-arc-2" d="M 120 150 Q 300 110 480 150" fill="none" />
+        <text>
+          <textPath href="#footer-arc-1" startOffset="50%" textAnchor="middle">let’s plant seeds together for</textPath>
+        </text>
+        <text>
+          <textPath href="#footer-arc-2" startOffset="50%" textAnchor="middle">a better tomorrow</textPath>
+        </text>
+      </svg>
+    </h2>
   )
 }
 
-function computeInitialStats() {
-  const prev = parseInt(localStorage.getItem('ah_visits') || '0')
-  const visits = prev + 1
-  localStorage.setItem('ah_visits', String(visits))
-
-  const nav = performance.getEntriesByType('navigation')[0]
-  const loadTime = nav ? `${Math.round(nav.loadEventEnd - nav.startTime)}ms` : '—'
-
-  const resources = performance.getEntriesByType('resource')
-  const pageWeight = `${Math.round(resources.reduce((s, r) => s + (r.transferSize || 0), 0) / 1024)}kb`
-  const requestCount = `${resources.length} requests`
-
-  const viewport = `${window.innerWidth}×${window.innerHeight}`
-  const connection = navigator?.connection?.effectiveType ?? '—'
-
-  return { visits: String(visits), loadTime, pageWeight, requestCount, viewport, connection }
-}
-
 export default function Footer() {
-  const [statsOpen, setStatsOpen] = useState(false)
-  const [stats, setStats] = useState(computeInitialStats)
-
-  useEffect(() => {
-    const onResize = () => setStats(s => ({ ...s, viewport: `${window.innerWidth}×${window.innerHeight}` }))
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }, [])
-
   return (
-    <footer style={{ background: 'var(--bg-surface)', borderTop: '1px solid var(--border)' }}>
-      <div style={{ width: '100%', maxWidth: '1126px', margin: '0 auto', boxSizing: 'border-box', padding: '80px 48px 40px' }}>
+    <footer className="footer" data-nav-theme="earth">
+      <div className="footer__main">
+        <p className="footer__thanks">thanks for checking out my basket!</p>
+        <CurvedHeadline />
 
-      {/* Three-column row */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '48px', marginBottom: '64px' }}>
+        <div className="footer__basket-row">
+          <nav className="footer__col footer__col--nav" aria-labelledby="footer-nav-title">
+            <h3 id="footer-nav-title" className="footer__col-title">Navigation</h3>
+            <ul className="footer__links">
+              {navLinks.map(({ label, to }) => (
+                <li key={label}><Link to={to} className="footer__link">{label}</Link></li>
+              ))}
+            </ul>
+          </nav>
 
-        {/* Left: italic serif quote */}
-        <p style={{
-          fontFamily: 'var(--font-heading)',
-          fontStyle: 'italic',
-          fontSize: '24px',
-          color: 'var(--text-primary)',
-          maxWidth: '320px',
-          lineHeight: 1.3,
-        }}>
-          Created and creating for His glory.
+          <img className="footer__basket" src={basketSrc} alt="" draggable="false" />
+
+          <div className="footer__col footer__col--connect">
+            <h3 className="footer__col-title">Connect</h3>
+            <ul className="footer__links">
+              {connectLinks.map(({ label, href, external, note }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    className="footer__link"
+                    target={external ? '_blank' : undefined}
+                    rel={external ? 'noopener noreferrer' : undefined}
+                  >
+                    {label}
+                    {(note || external) && (
+                      <span className="sr-only">
+                        {` (${[note, external && 'opens in a new tab'].filter(Boolean).join(', ')})`}
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="footer__bar">
+        <p><strong>©</strong> {new Date().getFullYear()} Arianna Hsu</p>
+        <p>
+          <a
+            href="https://www.desiringgod.org/solid-joys/a-six-point-summary-of-the-gospel"
+            className="footer__link footer__link--bar"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Created by Him to Create<span className="sr-only"> (opens in a new tab)</span>
+          </a>
         </p>
-
-        {/* Middle: Connect */}
-        <div>
-          <p style={{ ...mono, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-text)', marginBottom: '16px' }}>
-            Connect
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
-              { label: 'Email', href: 'mailto:ach282@cornell.edu' },
-              { label: 'LinkedIn', href: 'https://www.linkedin.com/in/arianna-hsu/', external: true },
-              { label: 'GitHub', href: '#' },
-            ].map(({ label, href, external }) => (
-              <a
-                key={label}
-                href={href}
-                target={external ? '_blank' : undefined}
-                rel={external ? 'noopener noreferrer' : undefined}
-                className="footer-link"
-                style={{ ...mono, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }}
-              >
-                {label}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Right: Page */}
-        <div>
-          <p style={{ ...mono, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-text)', marginBottom: '16px' }}>
-            Page
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
-              { label: 'Work', to: '/' },
-              { label: 'About', to: '/about' },
-              { label: 'Gallery', to: '/gallery' },
-            ].map(({ label, to }) => (
-              <Link
-                key={label}
-                to={to}
-                className="footer-link"
-                style={{ ...mono, fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Stats for nerds */}
-      <div style={{ borderTop: '1px solid var(--border)', paddingTop: '24px' }}>
-        <button
-          onClick={() => setStatsOpen(o => !o)}
-          style={{
-            ...mono,
-            fontSize: '11px',
-            color: 'var(--text-secondary)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-          }}
-        >
-          <span style={{ display: 'inline-block', transform: statsOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>›</span>
-          stats for nerds
-        </button>
-
-        {statsOpen && (
-          <div style={{
-            marginTop: '16px',
-            border: '1px solid var(--border)',
-            borderRadius: '4px',
-            padding: '24px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-            gap: '24px',
-          }}>
-            <StatCell label="Traffic" value={`${stats.visits} visit${stats.visits !== '1' ? 's' : ''} (this browser)`} />
-            <StatCell label="Performance" value={`${stats.loadTime} load · ${stats.pageWeight} · ${stats.requestCount}`} />
-            <StatCell label="Your session" value={`${stats.viewport} · ${stats.connection}`} />
-            <StatCell label="Site" value={`React + Vite · ${new Date().getFullYear()}`} />
-          </div>
-        )}
-      </div>
       </div>
     </footer>
   )
 }
-
