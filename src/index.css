@@ -125,20 +125,16 @@ body {
 }
 
 /* ───────────── Watercolor paper texture ───────────── */
-/* One tile over the whole document; multiply keeps text dark instead of washing it out. */
+/* Matches Figma (e.g. 96:563): the "watercolor paper" layer sits at the BOTTOM of each frame,
+   right above the zone colour, at 20% opacity with normal blending. So it gently lightens and
+   grains the background, and everything drawn on top (cards, text, illustrations) stays clean.
+   paper-wash.webp is the 400px paper tile with that 20% opacity baked into its alpha, layered
+   as the first background image of each zone (body, .hero, .projects, .footer). */
 #root {
   position: relative;
 }
-#root::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('./assets/paper.webp') repeat;
-  background-size: 400px 400px;
-  mix-blend-mode: multiply;
-  opacity: 0.22;
-  pointer-events: none;
-  z-index: 50;
+body {
+  background: url('./assets/paper-wash.webp') 0 0 / 400px 400px repeat, var(--bg-base);
 }
 
 /* ───────────── Nav ───────────── */
@@ -293,7 +289,7 @@ body {
   margin-top: calc(-1 * var(--nav-h)); /* sky runs up behind the floating nav */
   height: clamp(640px, 100svh, 1024px);
   overflow: hidden;
-  background: radial-gradient(ellipse 130% 110% at 22% 27%, var(--sky-light) 0%, var(--sky) 100%);
+  background: url('./assets/paper-wash.webp') 0 0 / 400px 400px repeat, radial-gradient(ellipse 130% 110% at 22% 27%, var(--sky-light) 0%, var(--sky) 100%);
 }
 .hero__ground {
   position: absolute;
@@ -528,7 +524,7 @@ body {
 
 /* ───────────── Footer (basket zone, Figma 56:1984) ───────────── */
 .footer {
-  background: #F4F3EF;              /* background/base */
+  background: url('./assets/paper-wash.webp') 0 0 / 400px 400px repeat, #F4F3EF; /* background/base + paper */
   border-top: 1px solid #854D18;    /* border/subtle */
   font-family: var(--font-sky);
 }
@@ -564,13 +560,13 @@ body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: end;
-  gap: 24px;
+  gap: 16px; /* columns hug the smaller basket */
   width: 100%;
   max-width: 1096px;
-  margin-top: 24px;
+  margin-top: 8px;
 }
 .footer__basket {
-  width: clamp(220px, 23vw, 336px);
+  width: clamp(176px, 18.4vw, 269px); /* 0.8 of the Figma size */
   height: auto;
   user-select: none;
 }
@@ -649,7 +645,7 @@ body {
   margin-left: calc(50% - 50vw);
   padding: 80px 24px;
   box-sizing: border-box;
-  background: var(--projects-bg);
+  background: url('./assets/paper-wash.webp') 0 0 / 400px 400px repeat, var(--projects-bg);
 }
 .projects__grid {
   display: grid;
@@ -744,4 +740,280 @@ body {
   .apple--growing img { animation-duration: 0.4s; animation-timing-function: ease; }
   @keyframes apple-grow { from { opacity: 0; } to { opacity: 1; } }
   .tagline__arrow { transition: none; }
+}
+
+/* ───────────── Basket (Figma 93:520) ───────────── */
+.basket {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: calc(-1 * var(--nav-h)); /* weave runs up behind the floating nav */
+}
+.basket__canvas {
+  position: relative;
+  height: 100svh; /* the whole page: no footer on Basket */
+  min-height: 520px;
+  overflow: hidden;
+  /* Weave at 80% opacity: a 20% wash of the paper colour over it, same result as fading the image. */
+  background:
+    linear-gradient(rgba(251, 247, 240, 0.2), rgba(251, 247, 240, 0.2)),
+    url('./assets/basket-weave.webp') repeat,
+    #FBF7F0;
+  cursor: grab;
+  touch-action: none; /* one-finger drags pan the canvas */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.basket__canvas.is-dragging { cursor: grabbing; }
+.basket__canvas:focus-visible { outline: 3px solid var(--action-earth); outline-offset: -6px; }
+.basket__items { margin: 0; padding: 0; list-style: none; }
+.basket__slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  will-change: transform;
+}
+
+/* Card: white mat around the photo; the title row grows out of the bottom on hover / tap / focus. */
+.basket-card {
+  display: block;
+  padding: 16px;
+  border: 0;
+  border-radius: 16px;
+  background: #fff;
+  color: #000;
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+  cursor: inherit;
+  transition: transform 0.35s cubic-bezier(.34, 1.45, .64, 1);
+}
+.basket-card__img {
+  display: block;
+  border-radius: 6px;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.basket-card__more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(.22, 1, .36, 1);
+}
+.basket-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.basket-card__title {
+  padding-top: 16px;
+  font: 400 20px/28px var(--font-heading-display); /* heading/card at 0.8 */
+  white-space: nowrap;
+}
+.basket-card__tag {
+  padding-top: 16px;
+  font: 400 12px/18px var(--font-tag); /* tag/default */
+  white-space: nowrap;
+}
+.basket-card.is-open .basket-card__more,
+.basket-card:focus-visible .basket-card__more { grid-template-rows: 1fr; }
+.basket-card.is-open .basket-card__meta,
+.basket-card:focus-visible .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
+.basket-card.is-open,
+.basket-card:focus-visible { transform: translateY(-4px); }
+@media (hover: hover) {
+  .basket__canvas:not(.is-dragging) .basket-card:hover .basket-card__more { grid-template-rows: 1fr; }
+  .basket__canvas:not(.is-dragging) .basket-card:hover .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
+  .basket__canvas:not(.is-dragging) .basket-card:hover { transform: translateY(-4px); }
+}
+.basket-card:focus-visible { outline: 3px solid var(--action-earth); outline-offset: 4px; }
+
+/* Glass controls, same material as the nav (earth theme). */
+.basket__controls {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95), inset 0 -1px 1px rgba(255, 255, 255, 0.35);
+}
+.basket__hint {
+  margin: 0;
+  padding: 0 8px;
+  font: 400 16px/24px var(--font-sky); /* same family as the nav links */
+  color: var(--text-on-orange); /* ≥9:1 on the light glass */
+  white-space: nowrap;
+}
+.basket__step {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--action-earth);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.basket__step:hover { background: rgba(120, 58, 0, 0.1); }
+.basket__step:active { transform: scale(0.92); }
+.basket__step:focus-visible { outline: 3px solid var(--action-earth); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .basket__controls { bottom: 16px; }
+  .basket-card { padding: 12px; border-radius: 14px; }
+  .basket-card__title { padding-top: 12px; font-size: 18px; line-height: 24px; }
+  .basket-card__tag { padding-top: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .basket-card,
+  .basket-card__more,
+  .basket-card__meta { transition: none; }
+  .basket-card.is-open,
+  .basket-card:focus-visible,
+  .basket__canvas .basket-card:hover { transform: none; }
+}
+/* Laptops/desktops (mouse or trackpad) scroll to pan; phones/tablets drag. */
+.basket__hint--pointer { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .basket__hint--pointer { display: inline; }
+  .basket__hint--touch { display: none; }
+}
+
+/* ───────────── Email menu (footer "Email") ───────────── */
+.email-menu { position: relative; display: inline-block; }
+button.footer__link {
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+/* Opens upward (the footer is at the bottom of the page), centred on the "Email" button. */
+.email-menu__panel {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 20;
+  width: max-content;
+  min-width: 200px;
+  padding: 12px;
+  border-radius: 20px;
+  isolation: isolate;
+  /* Liquid glass, same material as the nav pill. The 60% white tint keeps the brown text
+     (#482200, #4C4B4B) well over 7:1 even where the menu sits over the basket illustration. */
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),   /* top catchlight */
+    inset 0 -1px 1px rgba(255, 255, 255, 0.35),  /* bottom bounce light */
+    0 12px 28px -14px rgba(72, 34, 0, 0.4);      /* soft contact shadow */
+  text-align: left;
+  transform: translateX(-50%);
+  animation: email-menu-in 0.22s cubic-bezier(.22, 1, .36, 1);
+}
+.email-menu__panel[hidden] { display: none; }
+/* Specular rim: bright on top, fading round the sides like light on a curved edge. */
+.email-menu__panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.2) 45%, rgba(133, 77, 24, 0.25));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+@keyframes email-menu-in {
+  from { opacity: 0; transform: translate(-50%, 6px) scale(0.97); }
+}
+/* Address row: centred, so when the copy icon grows in on hover the text glides left to make room.
+   Clicking anywhere on it copies; the icon turns into a check for 2s. */
+.email-menu__address {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 0 6px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: 400 12px/18px var(--font-tag);
+  color: #4C4B4B; /* text/secondary: 7.8:1 on white */
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.email-menu__copy {
+  display: inline-grid;
+  place-items: center;
+  width: 0;
+  margin-left: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: var(--action-earth);
+  transition: width 0.25s cubic-bezier(.22, 1, .36, 1), margin-left 0.25s cubic-bezier(.22, 1, .36, 1), opacity 0.2s;
+}
+.email-menu__address:hover,
+.email-menu__address:focus-visible { background: rgba(120, 58, 0, 0.06); }
+.email-menu__address:hover .email-menu__copy,
+.email-menu__address:focus-visible .email-menu__copy,
+.email-menu__address.is-copied .email-menu__copy { width: 16px; margin-left: 8px; opacity: 1; }
+.email-menu__address:focus-visible { outline: 3px solid var(--action-earth); outline-offset: -1px; }
+.email-menu__list { margin: 0; padding: 0; list-style: none; }
+.email-menu__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  vertical-align: -4px;
+}
+.email-menu__icon svg { display: block; }
+.email-menu__item {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  font: 400 16px/24px var(--font-sky);
+  color: var(--text-on-orange); /* #482200 on white: 14:1 */
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.email-menu__item:hover { background: rgba(120, 58, 0, 0.08); }
+.email-menu__item:focus-visible { outline: 3px solid var(--action-earth); outline-offset: -1px; }
+@media (prefers-reduced-motion: reduce) {
+  .email-menu__panel { animation: none; }
+  .email-menu__copy { transition: none; }
+}
+/* Invisible bridge over the 10px gap under the menu, so moving the mouse from "Email" up into the
+   menu never counts as leaving it. */
+.email-menu__panel::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 12px;
 }

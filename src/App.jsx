@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -8,6 +8,10 @@ import CaseStudy from './pages/CaseStudy'
 import { BasketProvider } from './context/BasketContext'
 
 export default function App() {
+  // The Basket page is a full-screen canvas, so it skips the footer.
+  const { pathname } = useLocation()
+  const showFooter = !pathname.startsWith('/gallery')
+
   return (
     <BasketProvider>
       <Nav />
@@ -19,7 +23,7 @@ export default function App() {
           <Route path="/work/:slug" element={<CaseStudy />} />
         </Routes>
       </div>
-      <Footer />
+      {showFooter && <Footer />}
     </BasketProvider>
   )
 }

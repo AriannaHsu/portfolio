@@ -19,7 +19,7 @@ export default function Hero() {
 
       <div className="hero__copy">
         <h1 id="hero-title" className="hero__title">
-          <span className="hero__eyebrow">Arianna’s designing for</span>
+          <span className="hero__eyebrow">Arianna Hsu’s designing for</span>
           <span className="hero__script">
             <span className="hero__human">human</span>{' '}
             <span className="hero__flourishing">flourishing</span>

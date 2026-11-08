@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import basketSrc from '../assets/basket.webp'
+import EmailMenu from './EmailMenu'
 
 const RESUME_URL = '/Arianna-Hsu-Resume.pdf'
 const HEADLINE = 'let’s plant seeds together for a better tomorrow'
@@ -12,19 +13,20 @@ const navLinks = [
 
 const connectLinks = [
   { label: 'LinkedIn', href: 'https://linkedin.com/in/arianna-hsu', external: true },
-  { label: 'Email', href: 'mailto:ach282@cornell.edu' },
+  { label: 'Email', isEmail: true }, // menu: Gmail / Outlook / mail app / copy (see EmailMenu)
   { label: 'Resume', href: RESUME_URL, external: true, note: 'PDF' },
 ]
 
-// Headline set on a gentle arch over the basket (Figma annotation: "curve this").
+// Headline set on an arch over the basket (Figma annotation: "curve this").
 // Drawn as SVG text on paths so it scales as one unit; screen readers get the plain heading.
 function CurvedHeadline() {
   return (
     <h2 className="footer__headline">
       <span className="sr-only">{HEADLINE}</span>
-      <svg viewBox="0 0 600 170" aria-hidden="true" focusable="false">
-        <path id="footer-arc-1" d="M 20 84 Q 300 24 580 84" fill="none" />
-        <path id="footer-arc-2" d="M 120 150 Q 300 110 480 150" fill="none" />
+      {/* Deeper arches (each line rises ~65px / ~40px to its middle) so the curve reads clearly. */}
+      <svg viewBox="0 0 600 185" aria-hidden="true" focusable="false">
+        <path id="footer-arc-1" d="M 10 125 Q 300 -5 590 125" fill="none" />
+        <path id="footer-arc-2" d="M 105 170 Q 300 90 495 170" fill="none" />
         <text>
           <textPath href="#footer-arc-1" startOffset="50%" textAnchor="middle">let’s plant seeds together for</textPath>
         </text>
@@ -40,7 +42,7 @@ export default function Footer() {
   return (
     <footer className="footer" data-nav-theme="earth">
       <div className="footer__main">
-        <p className="footer__thanks">thanks for checking out my basket!</p>
+        <p className="footer__thanks">thanks for stopping by!</p>
         <CurvedHeadline />
 
         <div className="footer__basket-row">
@@ -58,9 +60,9 @@ export default function Footer() {
           <div className="footer__col footer__col--connect">
             <h3 className="footer__col-title">Connect</h3>
             <ul className="footer__links">
-              {connectLinks.map(({ label, href, external, note }) => (
+              {connectLinks.map(({ label, href, external, note, isEmail }) => (
                 <li key={label}>
-                  <a
+                  {isEmail ? <EmailMenu className="footer__link" /> : <a
                     href={href}
                     className="footer__link"
                     target={external ? '_blank' : undefined}
@@ -72,7 +74,7 @@ export default function Footer() {
                         {` (${[note, external && 'opens in a new tab'].filter(Boolean).join(', ')})`}
                       </span>
                     )}
-                  </a>
+                  </a>}
                 </li>
               ))}
             </ul>
