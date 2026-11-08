@@ -1,9 +1,24 @@
+import { useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getProject } from '../data/projects'
+import Interact from './case-studies/Interact'
+import RethinkFood from './case-studies/RethinkFood'
+
+// Case studies with their own hand-built page. Others fall back to the generic layout below.
+const customPages = {
+  interact: Interact,
+  'rethink-food': RethinkFood,
+}
 
 export default function CaseStudy() {
   const { slug } = useParams()
   const project = getProject(slug)
+
+  // Start each case study at the top (React Router keeps the previous scroll position).
+  useEffect(() => { window.scrollTo(0, 0) }, [slug])
+
+  const Custom = customPages[slug]
+  if (Custom) return <Custom />
 
   if (!project) {
     return (

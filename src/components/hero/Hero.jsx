@@ -4,7 +4,7 @@ import TypedTagline from './TypedTagline'
 import groundSrc from '../../assets/hero/ground.webp'
 
 // Order the tagline cycles through; each project needs a `heroLine` in projects.js.
-const HERO_ORDER = ['hudson-valley', 'interact', 'electricity-connection', 'google-calendar']
+const HERO_ORDER = ['hudson-valley', 'interact', 'rethink-food', 'google-calendar']
 
 const lines = HERO_ORDER
   .map((slug) => projects.find((p) => p.slug === slug))

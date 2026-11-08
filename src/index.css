@@ -542,7 +542,9 @@ body {
   color: #000;                      /* text/primary */
 }
 .footer__headline {
-  width: min(600px, 100%);
+  /* heading/h3 (Chewy 32px): the 600-unit drawing has 48-unit text, so draw it at 400px wide
+     (400/600 x 48 = 32px). Scaling the whole SVG keeps the arch shape the same. */
+  width: min(400px, 100%);
   margin: 0;
   line-height: 0;
 }
@@ -553,7 +555,7 @@ body {
   overflow: visible;
 }
 .footer__headline text {
-  font: 400 48px var(--font-heading-display); /* heading/h2 */
+  font: 400 48px var(--font-heading-display); /* SVG units; renders at 32px (heading/h3) */
   fill: var(--text-earth);                     /* 7.9:1 on base */
 }
 .footer__basket-row {

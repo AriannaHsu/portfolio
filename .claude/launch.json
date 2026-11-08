@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "5199", "--strictPort"],
       "port": 5199
+    },
+    {
+      "name": "old-portfolio",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "old-portfolio", "--port", "5200", "--strictPort"],
+      "port": 5200
     }
   ]
 }

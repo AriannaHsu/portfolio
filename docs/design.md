@@ -56,8 +56,8 @@ The page reads top to bottom as an orchard: **sky** (hero, nav) → **earth** (p
 |---|---|---|---|
 | — (hero only) | **Butterfly Kids** | 120 / auto | "Human Flourishing" script. Hero only, never body copy. |
 | `heading/h1` | **Chewy** | 64 / 72 | Page titles |
-| `heading/h2` | **Chewy** | 48 / 56 | Section headlines (e.g. footer "let's plant seeds together…") |
-| `heading/h3` | **Chewy** | 32 / 40 | Subsections. The hero eyebrow and tagline reuse the 32px size in MADE Okine Sans. |
+| `heading/h2` | **Chewy** | 48 / 56 | Section headlines |
+| `heading/h3` | **Chewy** | 32 / 40 | Subsections, and the curved footer headline "let's plant seeds together…". The hero eyebrow and tagline reuse the 32px size in MADE Okine Sans. |
 | `heading/card` | **Chewy** | 24 / 32 | Project card titles (the work page currently sets these at 32px) |
 | `body/large` | **MADE Okine Sans** | 20 / 30 | Nav links, footer column headings, lead text |
 | `body/default` | **MADE Okine Sans** | 16 / 24 | Body copy, footer links, copyright |
@@ -108,7 +108,7 @@ All weights are Regular (400). Letter-spacing is 0 throughout. Text is lowercase
 
 ### Footer (basket zone)
 - `background/base`, top border `border/subtle`, 40px vertical padding.
-- "thanks for checking out my basket!" (`body/large`, `text/primary`) above "let's plant seeds together for a better tomorrow" (`heading/h2`, `text/earth`, **set on a curve**, per the Figma annotation).
+- "thanks for checking out my basket!" (`body/large`, `text/primary`) above "let's plant seeds together for a better tomorrow" (`heading/h3` size, still an `<h2>` element since it heads the footer; `text/earth`, **set on a curve**, per the Figma annotation).
 - The watercolor basket of apples is centered, with **Navigation** (Work · About · Basket) on its left and **Connect** (LinkedIn · Email · Resume) on its right. Headings are `body/large` `text/primary`; links are `body/default` `text/secondary`.
 - Bottom bar: `border/earth` divider, 40px padding, "© 2026 Arianna Hsu" left and "Created by Him to Create" right, `body/default` `text/earth`.
 - Resume and Email live here and in the nav area. There is no standalone resume page.

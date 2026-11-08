@@ -7,9 +7,9 @@ export const projects = [
     meta: 'Mobile · 0–1',
     thumbnailLabel: 'interact — mobile screens',
     tags: ['UX Design', 'Research', 'Mobile'],
-    year: '2024',
+    year: '2025', // Feb – May 2025, per the case study
     coverImage: null,
-    overview: '',
+    overview: '', // InterACT has a hand-built page: src/pages/case-studies/Interact.jsx
     sections: [],
   },
   {
@@ -26,16 +26,16 @@ export const projects = [
     sections: [],
   },
   {
-    slug: 'electricity-connection',
-    title: 'Electricity Connection Service',
-    heroLine: 'through making electricity connections faster and fairer to apply for',
-    tagline: 'Increased efficiency and reduced corruption with a digital application and approval platform for electricity connections.',
-    meta: 'Mobile · 0–1',
-    thumbnailLabel: 'electricity connection service — mobile',
-    tags: ['UX Design', 'Research', 'Mobile'],
-    year: '2023',
+    slug: 'rethink-food',
+    title: 'Rethink Food',
+    heroLine: 'through showing donors the impact of their meals on communities',
+    tagline: 'Visualized donation impact on communities by connecting partner data to an interactive map for donors.',
+    meta: 'Desktop · Redesign',
+    thumbnailLabel: 'rethink food — partner map',
+    tags: ['UX Design', 'Research', 'Desktop'],
+    year: '2025', // Sep – Dec 2025, per the case study
     coverImage: null,
-    overview: '',
+    overview: '', // Rethink Food has a hand-built page: src/pages/case-studies/RethinkFood.jsx
     sections: [],
   },
   {
