@@ -16,6 +16,11 @@ const APPLES = [
 ]
 
 const REGROW_MS = 3000
+// Matches .apple--growing's animation in index.css (1.4s; 0.4s with reduced motion).
+const GROW_MS = 1400
+// On page load this apple grows in (after a short pause so it's noticed) instead of already hanging.
+const FIRST_GROW = 0
+const FIRST_GROW_DELAY_MS = 600
 // Flight timeline: drop → bounce → rest on the ground → fly to the basket.
 const DROP_MS = 450
 const BOUNCE_MS = 170
@@ -71,19 +76,33 @@ function buildFlightKeyframes(from, groundY, target) {
 
 export default function AppleTree() {
   const { addApple, basketRef } = useBasket()
-  // 'on' = hanging, 'gone' = picked, 'growing' = regrowing in place
-  const [states, setStates] = useState(() => APPLES.map(() => 'on'))
+  // 'on' = hanging, 'gone' = picked, 'growing' = growing in place (on load for the first apple, and after a pick)
+  const [states, setStates] = useState(() => APPLES.map((_, i) => (i === FIRST_GROW ? 'growing' : 'on')))
+  const [firstGrowDone, setFirstGrowDone] = useState(false)
   const [hasPicked, setHasPicked] = useState(false) // stop the discoverability wiggle once they've found it
   const treeRef = useRef(null)
   const buttonRefs = useRef([])
   const timers = useRef(new Set())
 
-  useEffect(() => {
-    const pending = timers.current
-    return () => pending.forEach(clearTimeout)
+  const setState = (i, value) => setStates((s) => s.map((v, j) => (j === i ? value : v)))
+
+  const later = useCallback((fn, ms) => {
+    const t = setTimeout(() => { timers.current.delete(t); fn() }, ms)
+    timers.current.add(t)
   }, [])
 
-  const setState = (i, value) => setStates((s) => s.map((v, j) => (j === i ? value : v)))
+  // Back to 'on' (pickable) once the grow animation has played. A timer rather than animationend,
+  // so the apple can't get stuck unclickable if the event is missed.
+  const finishGrowing = useCallback((i, afterMs) => {
+    later(() => setStates((s) => s.map((v, j) => (j === i && v === 'growing' ? 'on' : v))), afterMs + 50)
+  }, [later])
+
+  useEffect(() => {
+    finishGrowing(FIRST_GROW, FIRST_GROW_DELAY_MS + GROW_MS)
+    later(() => setFirstGrowDone(true), FIRST_GROW_DELAY_MS + GROW_MS + 50)
+    const pending = timers.current
+    return () => pending.forEach(clearTimeout)
+  }, [finishGrowing, later])
 
   const pick = useCallback((i) => {
     if (states[i] !== 'on') return
@@ -99,8 +118,8 @@ export default function AppleTree() {
 
     setState(i, 'gone')
     setHasPicked(true)
-    const t = setTimeout(() => { timers.current.delete(t); setState(i, 'growing') }, REGROW_MS)
-    timers.current.add(t)
+    later(() => setState(i, 'growing'), REGROW_MS)
+    finishGrowing(i, REGROW_MS + GROW_MS)
 
     if (prefersReducedMotion() || !img || !basket) {
       addApple()
@@ -128,7 +147,7 @@ export default function AppleTree() {
     })
     anim.onfinish = () => { clone.remove(); addApple() }
     anim.oncancel = () => clone.remove()
-  }, [states, addApple, basketRef])
+  }, [states, addApple, basketRef, later, finishGrowing])
 
   return (
     <div
@@ -146,9 +165,14 @@ export default function AppleTree() {
             ref={(el) => (buttonRefs.current[i] = el)}
             type="button"
             className={`apple apple--${state}${i === 0 && !hasPicked ? ' apple--hint' : ''}`}
-            style={{ left: `${apple.x}%`, top: `${apple.y}%`, width: `${apple.w}%`, '--tilt': `${apple.tilt}deg` }}
+            style={{
+              left: `${apple.x}%`,
+              top: `${apple.y}%`,
+              width: `${apple.w}%`,
+              '--tilt': `${apple.tilt}deg`,
+              '--grow-delay': i === FIRST_GROW && !firstGrowDone ? `${FIRST_GROW_DELAY_MS}ms` : undefined,
+            }}
             onClick={() => pick(i)}
-            onAnimationEnd={(e) => { if (state === 'growing' && e.animationName === 'apple-grow') setState(i, 'on') }}
             aria-label={`Pick the ${apple.label}`}
             aria-hidden={state === 'gone' ? 'true' : undefined}
             tabIndex={state === 'gone' ? -1 : 0}

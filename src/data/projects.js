@@ -2,7 +2,7 @@ export const projects = [
   {
     slug: 'interact',
     title: 'InterACT',
-    heroLine: 'through helping parents talk with their kids about online safety',
+    heroLine: 'through helping parents talk with their kids about *online safety*', // *…* = highlighted in the hero
     tagline: 'Helped parents teach their children about internet safety through open dialogue, in partnership with the Alaska Children\'s Trust.',
     meta: 'Mobile · 0–1',
     thumbnailLabel: 'interact — mobile screens',
@@ -15,7 +15,7 @@ export const projects = [
   {
     slug: 'google-calendar',
     title: 'Google Calendar',
-    heroLine: 'through making it easier for groups to find a time to meet',
+    heroLine: 'through making it easier for groups to *find a time to meet*',
     tagline: 'Simplified group event scheduling by letting guests share their availability and preferences for meeting times.',
     meta: 'Desktop · Case study',
     thumbnailLabel: 'google calendar — desktop',
@@ -28,7 +28,7 @@ export const projects = [
   {
     slug: 'rethink-food',
     title: 'Rethink Food',
-    heroLine: 'through showing donors the impact of their meals on communities',
+    heroLine: 'through showing donors the *impact of their meals* on communities',
     tagline: 'Visualized donation impact on communities by connecting partner data to an interactive map for donors.',
     meta: 'Desktop · Redesign',
     thumbnailLabel: 'rethink food — partner map',
@@ -41,7 +41,7 @@ export const projects = [
   {
     slug: 'hudson-valley',
     title: 'Hudson Valley',
-    heroLine: 'through expanding access to sustainable fibers',
+    heroLine: 'through expanding access to *sustainable fibers*',
     tagline: 'Stremalined inventory tracking of 200+ lbs of wool and increased accessibility of sustainable fibers in the Northeast.',
     meta: 'Desktop · 0–1',
     thumbnailLabel: 'hudson valley — desktop screens',

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * Blue dot that follows the mouse and expands into a "View case study →" pill over any
+ * Blue dot that follows the mouse and expands into an "👁 View case study" pill over any
  * element marked data-cursor="case-study" (project cards, the tagline arrow).
  *
  * Only runs for a precise pointer (mouse/trackpad); touch and keyboard users keep the
@@ -26,7 +26,7 @@ export default function CustomCursor() {
     }
     const onOver = (e) => {
       const target = e.target.closest?.('[data-cursor="case-study"]')
-      setLabel(target ? 'View case study →' : null)
+      setLabel(target ? 'View case study' : null)
     }
     const onLeaveWindow = () => setVisible(false)
 
@@ -49,7 +49,20 @@ export default function CustomCursor() {
       className={`custom-cursor${label ? ' is-expanded' : ''}${visible ? ' is-visible' : ''}`}
       aria-hidden="true"
     >
-      {label}
+      {label && (
+        <>
+          <svg className="custom-cursor__icon" viewBox="0 0 24 24" width="20" height="20" fill="none" focusable="false">
+            <path
+              d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinejoin="round"
+            />
+            <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.75" />
+          </svg>
+          <span>{label}</span>
+        </>
+      )}
     </div>
   )
 }

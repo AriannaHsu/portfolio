@@ -325,6 +325,11 @@ export default function Gallery() {
             )
             const shared = {
               className: `basket-card${open ? ' is-open' : ''}`,
+              // Moving the mouse onto another card closes a card opened by click, so it doesn't pop back
+              // open when the mouse leaves. (CSS retracts it, and any focused card, while hovering.)
+              onPointerEnter: (e) => {
+                if (e.pointerType === 'mouse' && openId && openId !== item.id) setOpenId(null)
+              },
               onFocus: (e) => {
                 if (e.currentTarget.matches(':focus-visible')) {
                   centreCard(i, { onlyIfHidden: true })

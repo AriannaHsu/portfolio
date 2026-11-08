@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import ArrowUpRight from '../ArrowUpRight'
 
 const TYPE_MS = 38
 const ERASE_MS = 16
@@ -17,6 +18,24 @@ function usePrefersReducedMotion() {
     return () => mql.removeEventListener('change', onChange)
   }, [])
   return reduced
+}
+
+// Typed characters (highlighted segments keep their colour), then the caret, then the rest of the
+// line kept invisible to hold its place.
+function renderTyped(segments, shown, caret) {
+  const typed = []
+  const rest = []
+  let start = 0
+  segments.forEach((seg, i) => {
+    const cut = Math.max(0, Math.min(seg.text.length, shown - start))
+    const cls = seg.hi ? 'tagline__hi' : undefined
+    if (cut > 0) typed.push(<span key={`t${i}`} className={cls}>{seg.text.slice(0, cut)}</span>)
+    if (cut < seg.text.length) {
+      rest.push(<span key={`r${i}`} className={`tagline__pending${cls ? ` ${cls}` : ''}`}>{seg.text.slice(cut)}</span>)
+    }
+    start += seg.text.length
+  })
+  return [...typed, caret, ...rest]
 }
 
 /**
@@ -92,20 +111,17 @@ export default function TypedTagline({ lines }) {
           data-cursor="case-study"
           aria-label={`${line.text}: read the ${line.title} case study`}
         >
+          {/* The whole line is always laid out (untyped part invisible), so it wraps once, balanced,
+              instead of words jumping between lines as they're typed. */}
           <span key={reduced ? index : undefined} className={`tagline__text${reduced ? ' tagline__fade' : ''}`} aria-hidden="true">
-            {line.text.slice(0, shownChars)}
+            {renderTyped(line.segments, shownChars, !reduced && (
+              <span key="caret" className={`tagline__caret${paused || complete ? ' is-paused' : ''}`} />
+            ))}
           </span>
-          {!reduced && <span className={`tagline__caret${paused || complete ? ' is-paused' : ''}`} aria-hidden="true" />}
           {/* Arrow appears once the line is complete; its slot is always reserved so the line doesn't shift. */}
           <span className="tagline__end" aria-hidden="true">
             <span className="tagline__arrow">
-              {/* Figma 91:517 "Arrow 1" */}
-              <svg width="40" height="27" viewBox="0 0 44 29.4558" fill="none" focusable="false">
-                <path
-                  d="M2 12.7279C0.89543 12.7279 0 13.6234 0 14.7279C0 15.8325 0.89543 16.7279 2 16.7279V14.7279V12.7279ZM2 14.7279V16.7279H42V14.7279V12.7279H2V14.7279ZM43.4142 16.1421C44.1953 15.3611 44.1953 14.0948 43.4142 13.3137L30.6863 0.585787C29.9052 -0.195262 28.6389 -0.195262 27.8579 0.585787C27.0768 1.36684 27.0768 2.63317 27.8579 3.41421L39.1716 14.7279L27.8579 26.0416C27.0768 26.8227 27.0768 28.089 27.8579 28.8701C28.6389 29.6511 29.9052 29.6511 30.6863 28.8701L43.4142 16.1421Z"
-                  fill="currentColor"
-                />
-              </svg>
+              <ArrowUpRight />
             </span>
           </span>
         </Link>

@@ -13,7 +13,7 @@ Source of truth: Figma file **Design Portfolio** (`KUm3lGWuGZPXJQaI71Y26N`), pag
 The page reads top to bottom as an orchard: **sky** (hero, nav) → **earth** (project section) → **basket** (footer). One story runs through it: fruit grows on the tree, you pick it, it goes in your basket, and the footer thanks you for "checking out my basket."
 
 - No drop shadows and no hard outlines on illustrations.
-- Each zone has its own palette; don't mix sky colors into the earth section or the reverse.
+- Each zone has its own palette; don't mix sky colors into the earth section or the reverse. The one exception is the fruit: apple orange (`text/sky-accent`) highlights key words in the hero tagline, like the apples on the tree.
 - Personality comes from a few interactive moments (apple tree, typed tagline, small microinteractions), not from adding more decoration.
 - Litmus test for any new element: *does this feel touched by a person, or does it feel like a template?* Painted things should feel touched; interface chrome should feel effortless.
 
@@ -34,6 +34,7 @@ The page reads top to bottom as an orchard: **sky** (hero, nav) → **earth** (p
 | `text/inverse` | `#FFFFFF` | Text on `fill/action-sky` | 4.67 ✅ |
 | `text/sky` | `#0B749A` | Hero copy | 4.0 on sky ⚠️ **24px+ only** |
 | `text/sky-navigation` | `#095F7D` | Nav links; any sky-zone text under 24px | 5.4 on sky ✅ |
+| `text/sky-accent` | `#A8460F` | Highlighted words in the hero tagline (apple orange, darkened for contrast). Code-only for now (`--sky-accent`); not yet a Figma variable | 5.3 on `#E0F7FF` · 4.5 on `#ADEAFF` ✅ |
 | `text/earth` | `#783A00` | Card titles, footer headline, copyright line | 7.9 on base ✅ · 3.7 on projects ⚠️ **24px+ only** |
 | `text/on-orange` | `#482200` | Card descriptions and tags on `background/projects` | 5.9 on projects ✅ |
 | `border/subtle` | `#854D18` | Footer top border, tag outlines | 2.9 on projects ⚠️ decorative only |

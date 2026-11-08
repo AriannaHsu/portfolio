@@ -1,6 +1,16 @@
 import { Link } from 'react-router-dom'
 import basketSrc from '../assets/basket.webp'
 import EmailMenu from './EmailMenu'
+import ArrowUpRight from './ArrowUpRight'
+
+// Shown on hover/focus beside links that open in a new tab (the sr-only note says it for screen readers).
+// 18px = cap height (12px) + underline (4px offset + 2px), so it spans the text and its underline.
+// The stroke is set to draw ~2px wide, matching the underline.
+const NewTabArrow = () => (
+  <span className="footer__newtab" aria-hidden="true">
+    <ArrowUpRight size={18} strokeWidth={1.6} />
+  </span>
+)
 
 const RESUME_URL = '/Arianna-Hsu-Resume.pdf'
 const HEADLINE = 'let’s plant seeds together for a better tomorrow'
@@ -69,6 +79,7 @@ export default function Footer() {
                     rel={external ? 'noopener noreferrer' : undefined}
                   >
                     {label}
+                    {external && <NewTabArrow />}
                     {(note || external) && (
                       <span className="sr-only">
                         {` (${[note, external && 'opens in a new tab'].filter(Boolean).join(', ')})`}
@@ -91,7 +102,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Created by Him to Create<span className="sr-only"> (opens in a new tab)</span>
+            Created by Him to Create<NewTabArrow /><span className="sr-only"> (opens in a new tab)</span>
           </a>
         </p>
       </div>

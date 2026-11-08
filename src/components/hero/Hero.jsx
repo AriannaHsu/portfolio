@@ -6,10 +6,17 @@ import groundSrc from '../../assets/hero/ground.webp'
 // Order the tagline cycles through; each project needs a `heroLine` in projects.js.
 const HERO_ORDER = ['hudson-valley', 'interact', 'rethink-food', 'google-calendar']
 
+// heroLine marks highlighted words with *asterisks*: "…about *online safety*".
+// Odd-numbered pieces of the split are the highlighted ones.
+function parseHeroLine(source) {
+  const segments = source.split('*').map((text, i) => ({ text, hi: i % 2 === 1 })).filter((s) => s.text)
+  return { segments, text: segments.map((s) => s.text).join('') }
+}
+
 const lines = HERO_ORDER
   .map((slug) => projects.find((p) => p.slug === slug))
   .filter((p) => p?.heroLine)
-  .map((p) => ({ slug: p.slug, title: p.title, text: p.heroLine }))
+  .map((p) => ({ slug: p.slug, title: p.title, ...parseHeroLine(p.heroLine) }))
 
 export default function Hero() {
   return (
