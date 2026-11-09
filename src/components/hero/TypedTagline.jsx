@@ -109,6 +109,7 @@ export default function TypedTagline({ lines }) {
           to={`/work/${line.slug}`}
           className={`tagline__link${complete ? ' is-ready' : ''}`}
           data-cursor="case-study"
+          data-cursor-label={`View ${line.title}`}
           aria-label={`${line.text}: read the ${line.title} case study`}
         >
           {/* The whole line is always laid out (untyped part invisible), so it wraps once, balanced,

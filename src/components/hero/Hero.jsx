@@ -26,13 +26,13 @@ export default function Hero() {
 
       <div className="hero__copy">
         <h1 id="hero-title" className="hero__title">
-          <span className="hero__eyebrow">Arianna Hsu’s designing for</span>
+          <span className="hero__eyebrow">Arianna Hsu designs for</span>
           <span className="hero__script">
-            <span className="hero__human">human</span>{' '}
-            <span className="hero__flourishing">flourishing</span>
+            human flourishing
           </span>
         </h1>
         {lines.length > 0 && <TypedTagline lines={lines} />}
+        <p className="hero__role">Leading design @ Hack4Impact</p>
       </div>
     </section>
   )

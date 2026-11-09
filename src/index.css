@@ -305,9 +305,10 @@ body {
 .hero__copy {
   position: absolute;
   z-index: 3;
-  top: 30%;
+  top: 50%;
   left: 4%;
   width: min(875px, 60%);
+  transform: translateY(-50%); /* whole text block centred vertically in the hero */
   text-align: center;
   color: var(--sky-text);
   pointer-events: none; /* let clicks reach apples behind the text; controls re-enable below */
@@ -323,15 +324,18 @@ body {
   font: 400 clamp(24px, 2.2vw, 32px)/1.25 var(--font-sky);
 }
 .hero__script {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0.15em 0 0.2em;
-  font: 400 clamp(72px, 8.3vw, 120px)/0.9 var(--font-script);
+  display: block;
+  margin: 0.1em 0 0.15em;
+  font: 400 clamp(72px, 8.3vw, 120px)/1 var(--font-script);
   text-transform: capitalize;
+  white-space: nowrap; /* "Human Flourishing" stays on one line */
 }
-.hero__human { transform: translateX(-1.2em); }
-.hero__flourishing { transform: translateX(0.64em); }
+/* body/large; under 24px, so it uses the stronger sky text for 4.5:1 contrast. */
+.hero__role {
+  margin: 4px 0 0;
+  font: 400 20px/30px var(--font-sky);
+  color: var(--sky-text-strong);
+}
 
 /* Tree: Figma box is 801x829 at x=865 in a 1440x1024 frame, trunk sinking into the ground strip. */
 .tree {
@@ -450,31 +454,27 @@ body {
 }
 /* No underline: the cursor pill and the arrow nudge signal the link on hover. */
 .tagline__link:focus-visible { outline: 3px solid var(--sky-text-strong); outline-offset: 4px; }
+/* Arrow centred on the lowercase letters at every tagline size: this box has no text, so its bottom
+   sits on the baseline; lift it by half the x-height (0.237em in this font) minus half the 17px icon. */
 .tagline__end {
-  display: inline-grid;
+  display: inline-block;
+  height: 17px;
   margin-left: 6px;
-  vertical-align: -0.12em;
-  height: 1em;
-  align-items: center;
-  justify-items: start;
-  text-align: left;
+  vertical-align: calc(0.237em - 8.5px);
 }
 .tagline__arrow {
   transition: opacity 0.25s, transform 0.3s cubic-bezier(.34, 1.45, .64, 1);
-  display: inline-flex;
-  align-items: center;
+  display: block;
   margin-left: 10px; /* 16px total gap from the text, per Figma */
   color: var(--sky-action); /* fill/action-sky; 3.6:1 on sky (graphics need 3:1) */
   opacity: 0;
   visibility: hidden;
   transform: translate(-6px, 6px); /* slides in along its own diagonal */
 }
-/* Its box already spans the lowercase letters, but a ↗ carries its weight in the top-right head,
-   so it reads high; a small optical nudge down balances it. */
-.tagline__arrow svg { display: block; width: 17px; height: 17px; position: relative; top: 0.1em; }
+.tagline__arrow svg { display: block; width: 17px; height: 17px; }
 .tagline__link.is-ready .tagline__arrow { opacity: 1; visibility: visible; transform: none; }
 .tagline__link.is-ready:hover .tagline__arrow,
-.tagline__link.is-ready:focus-visible .tagline__arrow { transform: translate(4px, -2px); } /* mostly sideways, so it doesn't ride up while hovered */
+.tagline__link.is-ready:focus-visible .tagline__arrow { transform: translateX(4px); } /* sideways only, so it stays level with the text */
 .tagline__pause {
   pointer-events: auto;
   margin-top: 4px;
@@ -771,9 +771,8 @@ body {
 
 /* Small screens: copy across the top, tree tucked bottom-right. */
 @media (max-width: 820px) {
-  .hero__copy { left: 16px; right: 16px; width: auto; top: calc(var(--nav-h) + 24px); }
-  .hero__human { transform: translateX(-0.6em); }
-  .hero__flourishing { transform: translateX(0.4em); }
+  .hero__copy { left: 16px; right: 16px; width: auto; top: calc(var(--nav-h) + 24px); transform: none; }
+  .hero__script { font-size: clamp(40px, 13vw, 72px); }
   .tree { left: auto; right: -12%; height: 40%; } /* keep all four apples on screen */
 }
 

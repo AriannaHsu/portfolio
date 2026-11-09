@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 
 /**
  * Blue dot that follows the mouse and expands into an "👁 View case study" pill over any
- * element marked data-cursor="case-study" (project cards, the tagline arrow).
+ * element marked data-cursor="case-study" (project cards, the tagline).
+ * An optional data-cursor-label overrides the text, e.g. "View InterACT".
  *
  * Only runs for a precise pointer (mouse/trackpad); touch and keyboard users keep the
  * normal behaviour. Stays hidden until the mouse first moves, so it never sits stuck at 0,0.
@@ -26,7 +27,7 @@ export default function CustomCursor() {
     }
     const onOver = (e) => {
       const target = e.target.closest?.('[data-cursor="case-study"]')
-      setLabel(target ? 'View case study' : null)
+      setLabel(target ? target.dataset.cursorLabel || 'View case study' : null)
     }
     const onLeaveWindow = () => setVisible(false)
 
