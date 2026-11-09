@@ -43,10 +43,14 @@ function measure(viewport) {
   const widest = Math.max(...basketItems.map((it) => it.imageWidth + CARD_PAD * 2))
   // Cards are drawn at 0.8 of the Figma size; phones shrink further so the widest one fits.
   const scale = vw < 640 ? Math.min(0.5, (vw - 48) / widest) : 0.8
-  const sizes = basketItems.map((item) => ({
-    w: item.imageWidth * scale + CARD_PAD * 2,
-    h: item.imageHeight * scale + CARD_PAD * 2 + META_H,
-  }))
+  const sizes = basketItems.map((item) => {
+    // Rough caption height (8px gap + 22px lines at ~7px per character), only used to keep cards
+    // from wrapping around the world while on screen, so erring tall is fine.
+    const chars = (item.caption || []).reduce((n, p) => n + (typeof p === 'string' ? p : p.text).length, 0)
+    const lines = chars ? Math.ceil((chars * 7) / (item.imageWidth * scale)) : 0
+    const reveal = META_H + (lines ? 8 + lines * 22 : 0)
+    return { w: item.imageWidth * scale + CARD_PAD * 2, h: item.imageHeight * scale + CARD_PAD * 2 + reveal, reveal }
+  })
   const maxW = Math.max(...sizes.map((s) => s.w))
   const maxH = Math.max(...sizes.map((s) => s.h))
   return {
@@ -118,7 +122,7 @@ export default function Gallery() {
         const left = Math.min(...basketItems.map((it) => it.x)) * d.scale
         const top = Math.min(...basketItems.map((it) => it.y)) * d.scale
         const right = Math.max(...basketItems.map((it, i) => it.x * d.scale + d.sizes[i].w))
-        const bottom = Math.max(...basketItems.map((it, i) => it.y * d.scale + d.sizes[i].h - META_H))
+        const bottom = Math.max(...basketItems.map((it, i) => it.y * d.scale + d.sizes[i].h - d.sizes[i].reveal))
         pan.current = {
           x: (d.vw - (left + right)) / 2,
           y: (d.vh - (top + bottom)) / 2 + 30,
@@ -323,37 +327,52 @@ export default function Gallery() {
                 </span>
               </>
             )
-            const shared = {
-              className: `basket-card${open ? ' is-open' : ''}`,
-              // Moving the mouse onto another card closes a card opened by click, so it doesn't pop back
-              // open when the mouse leaves. (CSS retracts it, and any focused card, while hovering.)
-              onPointerEnter: (e) => {
-                if (e.pointerType === 'mouse' && openId && openId !== item.id) setOpenId(null)
-              },
-              onFocus: (e) => {
-                if (e.currentTarget.matches(':focus-visible')) {
-                  centreCard(i, { onlyIfHidden: true })
-                  current.current = i
-                }
-              },
-            }
             return (
               <li key={item.id} ref={(el) => { slotRefs.current[i] = el }} className="basket__slot">
-                {item.to ? (
-                  <Link to={item.to} data-cursor="case-study" {...shared}>{content}</Link>
-                ) : (
-                  <button
-                    type="button"
-                    aria-expanded={open}
-                    onClick={() => {
+                {/* The white card holds the toggle (photo + title) and, below it, the caption. The caption
+                    sits outside the button because it can contain a link, and links can't nest in buttons. */}
+                <div
+                  className={`basket-card${open ? ' is-open' : ''}`}
+                  // Moving the mouse onto another card closes a card opened by click, so it doesn't pop back
+                  // open when the mouse leaves. (CSS retracts it, and any focused card, while hovering.)
+                  onPointerEnter={(e) => {
+                    if (e.pointerType === 'mouse' && openId && openId !== item.id) setOpenId(null)
+                  }}
+                  onFocus={(e) => {
+                    if (e.target.matches(':focus-visible')) {
+                      centreCard(i, { onlyIfHidden: true })
                       current.current = i
-                      setOpenId(open ? null : item.id)
-                    }}
-                    {...shared}
-                  >
-                    {content}
-                  </button>
-                )}
+                    }
+                  }}
+                >
+                  {item.to ? (
+                    <Link to={item.to} data-cursor="case-study" className="basket-card__toggle">{content}</Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className="basket-card__toggle"
+                      aria-expanded={open}
+                      onClick={() => {
+                        current.current = i
+                        setOpenId(open ? null : item.id)
+                      }}
+                    >
+                      {content}
+                    </button>
+                  )}
+                  {item.caption && (
+                    <div className="basket-card__more">
+                      <p className="basket-card__meta basket-card__caption">
+                        {item.caption.map((part) => (typeof part === 'string' ? part : (
+                          <a key={part.href} href={part.href} target="_blank" rel="noopener noreferrer">
+                            {part.text}
+                            <span className="sr-only"> (opens YouTube in a new tab)</span>
+                          </a>
+                        )))}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </li>
             )
           })}

@@ -846,6 +846,38 @@ body {
   cursor: inherit;
   transition: transform 0.35s cubic-bezier(.34, 1.45, .64, 1);
 }
+.basket-card__toggle {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+  cursor: inherit;
+}
+/* Caption under the title row: body/small, as wide as the photo (width 0 + min-width 100% keeps
+   long captions from stretching the card). */
+.basket-card__meta.basket-card__caption {
+  display: block;
+  width: 0;
+  min-width: 100%;
+  margin: 0;
+  padding-top: 8px;
+  font: 400 14px/22px var(--font-sky);
+  color: #4C4B4B; /* text/secondary: 8.6:1 on white */
+  cursor: auto;
+}
+.basket-card__caption a {
+  color: var(--text-earth); /* 10.7:1 on white */
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.basket-card__caption a:focus-visible { outline: 3px solid var(--action-earth); outline-offset: 2px; border-radius: 2px; }
+.basket-card:has(a:focus-visible) .basket-card__caption { overflow: visible; } /* don't clip the link's focus ring */
 .basket-card__img {
   display: block;
   border-radius: 6px;
@@ -879,11 +911,11 @@ body {
   white-space: nowrap;
 }
 .basket-card.is-open .basket-card__more,
-.basket-card:focus-visible .basket-card__more { grid-template-rows: 1fr; }
+.basket-card:has(:focus-visible) .basket-card__more { grid-template-rows: 1fr; }
 .basket-card.is-open .basket-card__meta,
-.basket-card:focus-visible .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
+.basket-card:has(:focus-visible) .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
 .basket-card.is-open,
-.basket-card:focus-visible { transform: translateY(-4px); }
+.basket-card:has(:focus-visible) { transform: translateY(-4px); }
 @media (hover: hover) {
   .basket__canvas:not(.is-dragging) .basket-card:hover .basket-card__more { grid-template-rows: 1fr; }
   .basket__canvas:not(.is-dragging) .basket-card:hover .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
@@ -893,7 +925,8 @@ body {
   .basket__canvas:not(.is-dragging) .basket__items:has(.basket-card:hover) .basket-card:not(:hover) .basket-card__meta { opacity: 0; transition-delay: 0s; }
   .basket__canvas:not(.is-dragging) .basket__items:has(.basket-card:hover) .basket-card:not(:hover) { transform: none; }
 }
-.basket-card:focus-visible { outline: 3px solid var(--action-earth); outline-offset: 4px; }
+.basket-card:has(.basket-card__toggle:focus-visible) { outline: 3px solid var(--action-earth); outline-offset: 4px; }
+.basket-card__toggle:focus-visible { outline: none; } /* the ring goes round the whole card instead */
 
 /* Glass controls, same material as the nav (earth theme). */
 .basket__controls {
@@ -945,7 +978,7 @@ body {
   .basket-card__more,
   .basket-card__meta { transition: none; }
   .basket-card.is-open,
-  .basket-card:focus-visible,
+  .basket-card:has(:focus-visible),
   .basket__canvas .basket-card:hover { transform: none; }
 }
 /* Laptops/desktops (mouse or trackpad) scroll to pan; phones/tablets drag. */
