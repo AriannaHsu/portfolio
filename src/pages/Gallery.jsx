@@ -333,6 +333,7 @@ export default function Gallery() {
                     sits outside the button because it can contain a link, and links can't nest in buttons. */}
                 <div
                   className={`basket-card${open ? ' is-open' : ''}`}
+                  style={{ '--tilt': `${item.tilt ?? 0}deg` }}
                   // Moving the mouse onto another card closes a card opened by click, so it doesn't pop back
                   // open when the mouse leaves. (CSS retracts it, and any focused card, while hovering.)
                   onPointerEnter={(e) => {

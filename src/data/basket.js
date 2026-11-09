@@ -1,6 +1,7 @@
 import koala from '../assets/basket/koala.webp'
 import altea from '../assets/basket/spain.webp'
 import orchestra from '../assets/basket/orchestra.webp'
+import h4iDesign from '../assets/basket/h4i-design.webp'
 
 /**
  * Items on the Basket canvas (Figma 93:520).
@@ -11,13 +12,15 @@ import orchestra from '../assets/basket/orchestra.webp'
  *
  * Add a project later by giving it `to: '/work/<slug>'`: the card becomes a link to the case study.
  *
+ * `tilt` (degrees, negative = left) sets how askew the card rests; it straightens when opened.
+ *
  * `caption` is the line revealed under the title: a list of plain text and { text, href } links
  * (links open in a new tab).
  */
 // Cards sit in separate columns (at least 140px apart), so opening one, which grows it downward by the
 // title row and caption, can never run it into another card. Card padding and text don't shrink on
 // phones the way positions do, so a smaller gap would overlap there first.
-export const BASKET_WORLD = { width: 1880, height: 1100 }
+export const BASKET_WORLD = { width: 2460, height: 1100 }
 
 export const basketItems = [
   {
@@ -30,18 +33,20 @@ export const basketItems = [
     imageWidth: 400,
     imageHeight: 360,
     objectPosition: '47% 50%',
+    tilt: -2.5,
     x: 98,
     y: 186,
   },
   {
     id: 'altea',
-    title: 'Altea, Spain',
+    title: 'Sunsets <3',
     tag: 'Photography',
     image: altea,
     alt: 'Pink and blue sunset over a calm sea in Altea, Spain, with a rocky headland on the horizon.',
-    caption: ['\"The heavens declare the glory of God, and the sky above proclaims his handiwork.\" - Psalm 19:1'],
+    caption: ['"The heavens declare the glory of God, and the sky above proclaims his handiwork." - Psalm 19:1'],
     imageWidth: 568,
     imageHeight: 320,
+    tilt: 1.5,
     x: 765,
     y: 412,
   },
@@ -54,7 +59,21 @@ export const basketItems = [
     caption: ['Check out ', { text: 'Impromptu and Humoresque by Glière', href: 'https://youtu.be/nyWV3yF1a5g?si=hEQ0NusIvrwemgPZ' }, ' to hear the bassoon\'s diverse range!'],
     imageWidth: 340,
     imageHeight: 340,
+    tilt: -2,
     x: 1480, // right of Altea (which ends at 1333)
     y: 160,
+  },
+  {
+    id: 'h4i-design',
+    title: 'Hack4Impact Design',
+    tag: 'Community',
+    image: h4iDesign,
+    alt: 'The Hack4Impact design team, dressed up and posing together on a stone terrace overlooking green hills on a cloudy day.',
+    caption: ['Giving back to the team that showed me how to keep humans at the center of product design'],
+    imageWidth: 440,
+    imageHeight: 330,
+    tilt: 2,
+    x: 1960, // right of Bassoon (which ends at 1820)
+    y: 400,
   },
 ]

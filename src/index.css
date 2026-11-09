@@ -600,6 +600,20 @@ body {
   width: clamp(176px, 18.4vw, 269px); /* 0.8 of the Figma size */
   height: auto;
   user-select: none;
+  transform-origin: 50% 100%; /* rocks on its base */
+}
+/* Hover: the basket sways gently on its base, like it's hanging off an arm. Plays once per hover. */
+@media (hover: hover) {
+  .footer__basket:hover { animation: basket-sway 1.6s ease-in-out; }
+}
+@keyframes basket-sway {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-3deg); }
+  55% { transform: rotate(2deg); }
+  80% { transform: rotate(-0.75deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer__basket:hover { animation: none; }
 }
 .footer__col {
   display: flex;
@@ -844,6 +858,7 @@ body {
   text-decoration: none;
   font: inherit;
   cursor: inherit;
+  transform: rotate(var(--tilt, 0deg)); /* rests slightly askew, like photos dropped in a basket; straightens when opened */
   transition: transform 0.35s cubic-bezier(.34, 1.45, .64, 1);
 }
 .basket-card__toggle {
@@ -892,9 +907,12 @@ body {
 }
 .basket-card__meta {
   display: flex;
+  flex-wrap: wrap; /* a long title pushes the tag onto its own line instead of widening the card */
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  column-gap: 16px;
+  width: 0;
+  min-width: 100%; /* as wide as the photo, never wider */
   min-height: 0;
   overflow: hidden;
   opacity: 0;
@@ -915,15 +933,15 @@ body {
 .basket-card.is-open .basket-card__meta,
 .basket-card:has(:focus-visible) .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
 .basket-card.is-open,
-.basket-card:has(:focus-visible) { transform: translateY(-4px); }
+.basket-card:has(:focus-visible) { transform: translateY(-4px) rotate(0); }
 @media (hover: hover) {
   .basket__canvas:not(.is-dragging) .basket-card:hover .basket-card__more { grid-template-rows: 1fr; }
   .basket__canvas:not(.is-dragging) .basket-card:hover .basket-card__meta { opacity: 1; transition-delay: 0.08s; }
-  .basket__canvas:not(.is-dragging) .basket-card:hover { transform: translateY(-4px); }
+  .basket__canvas:not(.is-dragging) .basket-card:hover { transform: translateY(-4px) rotate(0); }
   /* Hovering one card retracts whichever other card was open or focused, so only one shows its descriptor. */
   .basket__canvas:not(.is-dragging) .basket__items:has(.basket-card:hover) .basket-card:not(:hover) .basket-card__more { grid-template-rows: 0fr; }
   .basket__canvas:not(.is-dragging) .basket__items:has(.basket-card:hover) .basket-card:not(:hover) .basket-card__meta { opacity: 0; transition-delay: 0s; }
-  .basket__canvas:not(.is-dragging) .basket__items:has(.basket-card:hover) .basket-card:not(:hover) { transform: none; }
+  .basket__canvas:not(.is-dragging) .basket__items:has(.basket-card:hover) .basket-card:not(:hover) { transform: rotate(var(--tilt, 0deg)); }
 }
 .basket-card:has(.basket-card__toggle:focus-visible) { outline: 3px solid var(--action-earth); outline-offset: 4px; }
 .basket-card__toggle:focus-visible { outline: none; } /* the ring goes round the whole card instead */
