@@ -2,6 +2,7 @@ import { projects } from '../../data/projects'
 import AppleTree from './AppleTree'
 import TypedTagline from './TypedTagline'
 import groundSrc from '../../assets/hero/ground.webp'
+// import hack4ImpactLogo from '../../assets/hero/hack4impact.webp' // used by the "Leading design @" line below
 
 // Order the tagline cycles through; each project needs a `heroLine` in projects.js.
 const HERO_ORDER = ['hudson-valley', 'interact', 'rethink-food', 'google-calendar']
@@ -32,7 +33,12 @@ export default function Hero() {
           </span>
         </h1>
         {lines.length > 0 && <TypedTagline lines={lines} />}
-        <p className="hero__role">Leading design @ Hack4Impact</p>
+        {/* Hidden for now. To bring it back, uncomment this and the hack4ImpactLogo import at the top.
+        <p className="hero__role">
+          Leading design @{' '}
+          <img className="hero__role-logo" src={hack4ImpactLogo} alt="Hack4Impact Cornell" draggable="false" />
+        </p>
+        */}
       </div>
     </section>
   )

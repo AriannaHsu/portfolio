@@ -336,6 +336,16 @@ body {
   font: 400 20px/30px var(--font-sky);
   color: var(--sky-text-strong);
 }
+/* Sized so the "hack4impact" wordmark's letters match the text beside it (its ascenders equal
+   this font's, ~0.7em) and its baseline sits on the text baseline. Measured from the image:
+   ascender-to-baseline is 47% of its height, and 44% of it hangs below the baseline. */
+.hero__role-logo {
+  display: inline-block;
+  height: 1.48em;
+  width: auto;
+  vertical-align: -0.65em;
+  user-select: none;
+}
 
 /* Tree: Figma box is 801x829 at x=865 in a 1440x1024 frame, trunk sinking into the ground strip. */
 .tree {
@@ -343,8 +353,9 @@ body {
   z-index: 2;
   left: 60%;
   bottom: calc(var(--ground-h) * 0.68);
-  height: 64.8%; /* 0.8× the Figma size (81%) */
+  height: 71.28%; /* 0.88× the Figma size (81%) */
   aspect-ratio: 801.25 / 828.75;
+  transform: translateX(-4.5%); /* grown 1.1× around its old centre, so the right leaves stay on screen */
 }
 .tree__img {
   width: 100%;
@@ -543,7 +554,7 @@ body {
 /* ───────────── Footer (basket zone, Figma 56:1984) ───────────── */
 .footer {
   background: url('./assets/paper-wash.webp') 0 0 / 400px 400px repeat, #F4F3EF; /* background/base + paper */
-  border-top: 1px solid #854D18;    /* border/subtle */
+  border-top: 1px solid #4C4B4B50;    /* border/subtle */
   font-family: var(--font-sky);
 }
 .footer__main {
@@ -773,7 +784,7 @@ body {
 @media (max-width: 820px) {
   .hero__copy { left: 16px; right: 16px; width: auto; top: calc(var(--nav-h) + 24px); transform: none; }
   .hero__script { font-size: clamp(40px, 13vw, 72px); }
-  .tree { left: auto; right: -12%; height: 40%; } /* keep all four apples on screen */
+  .tree { left: auto; right: -12%; height: 44%; transform: none; } /* keep all four apples on screen */
 }
 
 @media (prefers-reduced-motion: reduce) {
